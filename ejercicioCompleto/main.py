@@ -11,68 +11,64 @@
 #Lista de personas
 lista_personas = []
 
-# Buscar persona por email y ternar el indice
-def obtener_indice_por_email(email: str) -> int:
-    # Hacemos referencia la variable lista_personas global
-    global lista_personas
-    # Variable indice para contar la posicion de la busqueda
-    indice = 0
-    # Ciclo que recorre la lista de peronas y lo asignar a la variable persona
-    for persona in lista_personas:
-        # Preguntas si la clave email de la personas es igual al email ingresado en la funcion
-        # Recordar que la lista_personas es una lista de diccionarios.
-        if persona["email"] == email:
-            # En caso de encontrar a la persona por su email, retornamos el indice
-            return indice
-        # En caso de no encontrar y aun quedar elementos en la lista, le suma 1 al indice
-        # Es una accion de contador
-        indice = indice + 1
-    # En caso de no encontrar el elemento en la lista, esto ocurre cuando el ciclo for
-    # recorre toda la lista, retornara un -1 haciendo refrencia a que no encontro el valor.
-    return -1
+#Buscar persona por email y retornar el índice.
+def obtener_indice_por_email (input_email: str) -> int:
+    global lista_personas #Se hace referencia a variable global
+    indice = 0 #variable para contar el índice
+    for persona in lista_personas: #Ciclo que recorre la lista de personas y lo asigna a la variable persona
+        if persona["email"] == input_email: #Pregunta si la clave de personas es igual al email ingresado por el usuario. Recordar que la lista_personas en una lista de dicionarios.
+            return indice #En caso de encontrar a la persona, se retorna el índice.
+        indice += 1 #Añade un nivel al índice si no encuentra a la persona
+
+    return -1 #Si al terminar el ciclo , no se encuentra a la persona, retorna -1
+def crear_diccionario_persona(email: str, nombres: str, apellidos: str) -> dict:
+    return {
+        "email" : email,
+        "nombres" : nombres,
+        "apellidos" : apellidos
+    }
+
+def validar_email() -> str:
+    #Solicitar email al usuario
+    email = input("Ingrese el correo electrónico de la persona: ")
+    #Validar que el email está disponible.
+    #Si el email no está disponible, informaremos al usuario y solicitaremos un nuevo email
+
+    while obtener_indice_por_email(email) != -1:
+        print("ERROR: \n \t El correo ingresado ya está registrado")
+        opcion = input("Desea ingresar otro correo? [s/n]")
+        while opcion.upper() != "S" and opcion.upper() !="N":
+            opcion = input("ERROR: USTED NO HA INGRESADO UNA OPCIÓN VÁLIDA\nDesea ingresar otro correo? [s/n]")
+
+        if opcion.upper() == "S":
+            email = input("Reingrese el correo electrónico de la persona: ")
+        elif opcion.upper() =="N":
+            print("\n * USTED HA CANCELADO EL INGRESO * \n")
+            return
+    return email
 
 def buscar_persona():
+
     pass
-
-def obtener_diccionario_persona(email: str, nombres: str, apellidos: str):
-    persona = {
-        "email": email,
-        "nombres": nombres,
-        "apellidos": apellidos
-    }
-    return persona
-
 
 def agregar_persona():
     global lista_personas
-    print("\nINGRESAR PERSONA\n")
-    # Solcicitar al usuario que ingrese un email
-    email = input("Ingrese el email de la persona: ")
-    # Validar que el email se encuentre disponible
-    # Si el email no se encuentra disponible, informaremos al usuario y
-    # volveremos solicitar un nuevo email.
-    while obtener_indice_por_email(email) != -1:
-        print("ERROR: El email ingresado ya esta registrado.")
+    email = validar_email()
+    if email == None:
+        return
+    #En caso que el email esté disponible solicitaremos el resto de los datos
 
-        opcion = input("Desea ingresar a la persona? [ingresar S o N]: ")
-        while opcion.upper() != "S" and opcion.upper() != "N":
-            print("ERROR: Debe ingresar una S o N.")
-            opcion = input("Desea ingresar a la persona [ingresar S o N]: ")
-            
-        if opcion.upper() == "S":
-            email = input("Ingrese nuevamente el email de la persona: ")
-        elif opcion.upper() == "N":
-            print("Ud. ha cancelado el registro de la persona.")
-            return
-    # En caso que el email si este disponible, solicitaremos el resto de los datos
     nombres = input("Ingrese los nombres de la persona: ")
-    apellidos = input("Ingrese los apellidos de la persona: ")
-    # Crearemos un diccionario con los datos la persona y lo agregaremos
-    # a la lista.
-    persona = obtener_diccionario_persona(email, nombres, apellidos)
+    apellidos = input("Ingrese los apellidos de persona: ")
+    #Crear diccionario y agregar a la lista
+
+    persona = crear_diccionario_persona(email, nombres, apellidos)
+
     lista_personas.append(persona)
-    # Informamos al usuario que el proceso fue terminado    
-    print("La persona fue registrada exitosamente.")
+    #Informar al usuario que el proceso fue terminado
+
+    print("La persona ha sido agregada exitosamente")
+
 
 def eliminar_persona():
     pass
@@ -80,44 +76,30 @@ def eliminar_persona():
 def editar_persona():
     pass
 
-# Funcion que valida si una opcion es correcta
-# Si se encuentre etre 1 y 5
-def es_opcion_correcta(opcion: str) -> bool:
-    opciones = ("1", "2", "3", "4", "5")
-    if opcion in opciones:
-        return True
-    else:
-        return False
-
 def menu():
-    # Mostrar el menu mientras el usuario lo requiera
     while True:
-        # Se muestra el menu al usuario
-        print("MENU APLICACION")
-        print("1.- Buscar persona")
-        print("2.- Agregar persona")
-        print("3.- Eliminar persona")
-        print("4.- Editar persona")
-        print("5.- Salir")
-        # Se solicita al usuario que ingrese su opcion
-        opcion = input("Ingresa tu opcion: ")
-        # Validamos que la opcion sea correcta
-        while not es_opcion_correcta(opcion):
-            print("Error: Ud. ha ingresado un opcion incorrecta.")
-            opcion = input("Ingrese una opcion entre 1 y 5: ")
-
-        # Flujos segun la opcion
-        if opcion == "1":
-            buscar_persona()
-        elif opcion == "2":
-            agregar_persona()
-        elif opcion == "3":
-            eliminar_persona()
-        elif opcion == "4":
-            editar_persona()
-        else:
-            break
-
-    print("Ud. ha terminado el programa.")
-
+        #Mostrar menú
+        print("** MENÚ **")
+        print(" 1.- Buscar persona \n 2.- Agregar persona \n 3.- Eliminar persona \n 4.- Editar persona \n 5.- Salir")
+        option = input("Seleccione una opción del menú: ")
+        #Flujos según opción
+        match option:
+            case "1":
+                print("\n * BUSCAR PESRSONA * \n")
+                buscar_persona()
+            case "2": 
+                print("\n *  AGREGAR PERSONA * \n")
+                agregar_persona()
+            case "3":
+                print("\n * ELIMINAR PERSONA * \n")
+                eliminar_persona()
+            case "4":
+                print("\n * EDITAR PERSONA * \n")
+                eliminar_persona()
+            case "5":
+                print("GRACIAS POR DEJARME DESCANSAR. \nADIÓS")
+                exit()
+            case _:
+                print("Ingrese un valor entre 1 y 5")
+                menu()
 menu()
