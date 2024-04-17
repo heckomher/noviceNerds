@@ -43,21 +43,26 @@ def validar_email() -> str:
         if opcion.upper() == "S":
             email = input("Reingrese el correo electrónico de la persona: ")
         elif opcion.upper() =="N":
-            print("\n * USTED HA CANCELADO EL INGRESO * \n")
+            print("\n * USTED HA CANCELADO EL PROCESO * \n")
             return
     return email
 
 def buscar_persona():
-
-    pass
+    global lista_personas
+    email = input("Ingrese el correo que desea buscar : ")
+    indice = int(obtener_indice_por_email(email))
+    if indice == -1:
+        print("No se ha encontrado el correo ingresado")
+        return
+    print("\n Se ha encontrado la siguiente información: ")
+    print(str(lista_personas[indice]))
 
 def agregar_persona():
     global lista_personas
     email = validar_email()
-    if email == None:
+    if email is None:
         return
     #En caso que el email esté disponible solicitaremos el resto de los datos
-
     nombres = input("Ingrese los nombres de la persona: ")
     apellidos = input("Ingrese los apellidos de persona: ")
     #Crear diccionario y agregar a la lista
