@@ -46,7 +46,16 @@ def validar_email() -> str:
             print("\n * USTED HA CANCELADO EL PROCESO * \n")
             return
     return email
-
+def confirmar(accion: str, texto: str) -> bool:
+    opcion = input("¿Confirma que desea {accion} a {texto}? [s/n]: ")
+    while opcion.upper() != "S" or opcion.upper !="N":
+        print("\nERROR: La opción ingresada no es válida")
+        opcion = input("¿Confirma que desea {accion} a {texto}? [s/n]: ")
+    if opcion =="S":
+        return True
+    elif opcion == "N":
+        return False
+    
 def buscar_persona():
     global lista_personas
     email = input("Ingrese el correo que desea buscar : ")
@@ -76,7 +85,15 @@ def agregar_persona():
 
 
 def eliminar_persona():
-    pass
+    global lista_personas
+    email = input("Ingrese el correo que desea eliminar: ")
+    indice = obtener_indice_por_email(email)
+    if indice == -1:
+        print("No se ha encontrado el correo ingresado")
+        return
+    persona = lista_personas[indice]
+    confirmacion = input("¿Confirma que desea eliminar a {persona}? [s/n]")
+    while confirmacion
 
 def editar_persona():
     pass
