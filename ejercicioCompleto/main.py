@@ -109,7 +109,7 @@ def editar_persona():
     if indice != -1:
         print("Dato de la persona [valor actual] (deje en blanco y pulse ENTER para mantener el valor actual)")
         for clave, valor in lista_personas[indice].items():
-                if str(clave).upper != "EMAIL":
+                if str(clave).upper() != "EMAIL":
                     nuevo_valor = input(str(clave) + " [" + str(valor) + "]: ")
                     if nuevo_valor != "":
                         lista_personas[indice][clave] = nuevo_valor
