@@ -19,7 +19,6 @@ def obtener_indice_por_email (input_email: str) -> int:
         if persona["email"] == input_email: #Pregunta si la clave de personas es igual al email ingresado por el usuario. Recordar que la lista_personas en una lista de dicionarios.
             return indice #En caso de encontrar a la persona, se retorna el índice.
         indice += 1 #Añade un nivel al índice si no encuentra a la persona
-
     return -1 #Si al terminar el ciclo , no se encuentra a la persona, retorna -1
 def crear_diccionario_persona(email: str, nombres: str, apellidos: str) -> dict:
     return {
@@ -27,6 +26,16 @@ def crear_diccionario_persona(email: str, nombres: str, apellidos: str) -> dict:
         "nombres" : nombres,
         "apellidos" : apellidos
     }
+def confirmar(mensaje:str) -> bool:
+    opcion = input(mensaje + " [ingrese s/n]: ")
+    while opcion.upper() not in ("S", "N"):
+        print("\nERROR: La opción ingresada no es válida")
+        opcion = input(mensaje + "[s/n]: ")
+    return opcion.upper() =="S"
+
+def email_disponible(email:str) -> bool:
+    return obtener_indice_por_email(email) == -1
+
 
 def validar_email() -> str:
     #Solicitar email al usuario
@@ -34,28 +43,17 @@ def validar_email() -> str:
     #Validar que el email está disponible.
     #Si el email no está disponible, informaremos al usuario y solicitaremos un nuevo email
 
-    while obtener_indice_por_email(email) != -1:
+    while not email_disponible(email):
         print("ERROR: \n \t El correo ingresado ya está registrado")
-        opcion = input("Desea ingresar otro correo? [s/n]")
-        while opcion.upper() != "S" and opcion.upper() !="N":
-            opcion = input("ERROR: USTED NO HA INGRESADO UNA OPCIÓN VÁLIDA\nDesea ingresar otro correo? [s/n]")
+        respuesta = confirmar("¿Desea ingresar otro correo?")
 
-        if opcion.upper() == "S":
+        if respuesta:
             email = input("Reingrese el correo electrónico de la persona: ")
-        elif opcion.upper() =="N":
+        else:
             print("\n * USTED HA CANCELADO EL PROCESO * \n")
             return
     return email
-def confirmar(accion: str, texto: str) -> bool:
-    opcion = input("¿Confirma que desea {accion} a {texto}? [s/n]: ")
-    while opcion.upper() != "S" or opcion.upper !="N":
-        print("\nERROR: La opción ingresada no es válida")
-        opcion = input("¿Confirma que desea {accion} a {texto}? [s/n]: ")
-    if opcion =="S":
-        return True
-    elif opcion == "N":
-        return False
-    
+
 def buscar_persona():
     global lista_personas
     email = input("Ingrese el correo que desea buscar : ")
@@ -64,7 +62,11 @@ def buscar_persona():
         print("No se ha encontrado el correo ingresado")
         return
     print("\n Se ha encontrado la siguiente información: ")
-    print(str(lista_personas[indice]))
+    diccionario_persona = lista_personas[indice]
+    print("\nEmail : \t " + diccionario_persona["email"] +
+          "\nNombres : \t " + diccionario_persona["nombres"] +
+          "\nApellidos : \t " + diccionario_persona["apellidos"]
+        )
 
 def agregar_persona():
     global lista_personas
@@ -92,16 +94,36 @@ def eliminar_persona():
         print("No se ha encontrado el correo ingresado")
         return
     persona = lista_personas[indice]
-    confirmacion = input("¿Confirma que desea eliminar a {persona}? [s/n]")
-    while confirmacion
+    cadena_persona = "Se ha encontrado a : " + "\nEmail : \t " + persona["email"] + "\nNombres : \t " + persona["nombres"] + "\nApellidos : \t " + persona["apellidos"]+"\n¿ESTA SEGURA(O) QUE DESEA ELIMINAR A ESTA PERSONA?"
+    respuesta = confirmar(cadena_persona)
+    if respuesta:
+        lista_personas.pop(indice)
+        print(email+"Se ha eliminado correctamente")
+    else:
+        print("Usted ha cancelado el proceso")
 
 def editar_persona():
-    pass
+    global lista_personas
+    email = input("Ingrese el correo a editar: ")
+    indice = obtener_indice_por_email(email)
+    if indice != -1:
+        print("Dato de la persona [valor actual] (deje en blanco y pulse ENTER para mantener el valor actual)")
+        for clave, valor in lista_personas[indice].items():
+                if str(clave).upper != "EMAIL":
+                    nuevo_valor = input(str(clave) + " [" + str(valor) + "]: ")
+                    if nuevo_valor != "":
+                        lista_personas[indice][clave] = nuevo_valor
+                else:
+                    print("El email no se puede editar")
+        print("Se ha editado correctamente")
+    else:
+        print("No se ha encontrado el correo")
+
 
 def menu():
     while True:
         #Mostrar menú
-        print("** MENÚ **")
+        print("\n** MENÚ **")
         print(" 1.- Buscar persona \n 2.- Agregar persona \n 3.- Eliminar persona \n 4.- Editar persona \n 5.- Salir")
         option = input("Seleccione una opción del menú: ")
         #Flujos según opción
@@ -117,7 +139,7 @@ def menu():
                 eliminar_persona()
             case "4":
                 print("\n * EDITAR PERSONA * \n")
-                eliminar_persona()
+                editar_persona()
             case "5":
                 print("GRACIAS POR DEJARME DESCANSAR. \nADIÓS")
                 exit()
