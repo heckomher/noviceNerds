@@ -120,6 +120,7 @@ def editar_persona():
         print("No se ha encontrado el correo")
 
 
+#Menú de la aplicación
 def menu():
     while True:
         #Mostrar menú
